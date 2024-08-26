@@ -5,8 +5,19 @@ import pandas as pd
 import yaml
 import json
 from fastapi import FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Tainan Restaurant API")
+
+origins = ["https://prod.dvcbot.net"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 df = pd.DataFrame(json.load(open("tainan_restaurant.json", encoding="utf-8-sig")))
 df = df[["name", "district", "summary", "introduction", "open_time", "address"]]
 
