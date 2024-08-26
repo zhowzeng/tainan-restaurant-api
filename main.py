@@ -42,7 +42,7 @@ def read_ai_plugin():
         "name_for_human": "台南餐飲",
         "name_for_model": "tainan_restaurant",
         "description_for_human": "Tainan Restaurant API",
-        "description_for_model": "當你需要查詢台南地區餐飲資料時, 請使用這個API, 並且以廣告口吻推薦店家",
+        "description_for_model": "當你需要查詢台南地區餐飲資料時, 請使用本API, 本API能夠隨機推薦地區餐飲或是查詢特定店家地址、介紹、與營業時間",
         "api": {
             "type": "openapi",
             "url": f"{deploy_url}/.well-known/openapi.yaml",
@@ -59,14 +59,17 @@ def read_openapi_yaml() -> Response:
     return Response(yaml_string.getvalue(), media_type="text/yaml")
 
 
-@app.get("/random_restaurant/{district}")
-def get_tainan_restaurant_by_district(district: str):
+@app.get(
+    "/random_restaurant/{district}",
+    description="輸入行政區與數量，隨機回傳該數量的餐廳資訊",
+)
+def get_random_restaurant_by_district(district: str, number: bool):
     if district not in df["district"].unique():
         return {"message": "台南不存在此行政區"}
-    return df[df["district"] == district].sample(5).to_dict(orient="records")
+    return df[df["district"] == district].sample(number).to_dict(orient="records")
 
 
-@app.get("/restaurant/{name}")
+@app.get("/restaurant/{name}", description="輸入店名，回傳店家資訊")
 def get_restaurant_info_by_name(name: str):
     if name not in df["name"].unique():
         return {"message": "資料庫無此店家"}
