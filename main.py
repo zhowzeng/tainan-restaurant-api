@@ -23,7 +23,7 @@ def read_ai_plugin():
         "description_for_model": "當你需要查詢台南地區餐飲資料時, 請使用這個API, 並且以廣告口吻推薦店家",
         "api": {
             "type": "openapi",
-            "url": "https://d32f-1-174-237-70.ngrok-free.app/.well-known/openapi.yaml",
+            "url": "https://vast-everglades-41844-ba40e8a9c606.herokuapp.com/.well-known/openapi.yaml",
         },
     }
 
