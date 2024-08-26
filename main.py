@@ -14,7 +14,10 @@ app = FastAPI(
     servers=[{"url": deploy_url}],
 )
 
-origins = ["https://prod.dvcbot.net"]
+origins = [
+    "http://localhost",
+    "https://prod.dvcbot.net",
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -57,5 +60,11 @@ def read_openapi_yaml() -> Response:
 def get_tainan_restaurant_by_district(district: str):
     if district not in df["district"].unique():
         return {"message": "台南不存在此行政區"}
-    result = df[df["district"] == district].sample(5).to_dict(orient="records")
-    return result
+    return df[df["district"] == district].sample(5).to_dict(orient="records")
+
+
+@app.get("/restaurant/{name}")
+def get_restaurant_info_by_name(name: str):
+    if name not in df["name"].unique():
+        return {"message": "資料庫無此店家"}
+    return df[df["name"] == name].to_dict(orient="records")
