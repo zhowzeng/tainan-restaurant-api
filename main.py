@@ -11,7 +11,10 @@ deploy_url = "https://vast-everglades-41844-ba40e8a9c606.herokuapp.com"
 
 app = FastAPI(
     title="Tainan Restaurant API",
-    servers=[{"url": deploy_url}],
+    servers=[
+        {"url": deploy_url, "description": "Production server"},
+        {"url": "/", "description": "Local test server"},
+    ],
 )
 
 origins = [
