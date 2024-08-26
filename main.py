@@ -7,7 +7,12 @@ import json
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="Tainan Restaurant API")
+deploy_url = "https://vast-everglades-41844-ba40e8a9c606.herokuapp.com"
+
+app = FastAPI(
+    title="Tainan Restaurant API",
+    servers=[{"url": deploy_url}],
+)
 
 origins = ["https://prod.dvcbot.net"]
 app.add_middleware(
@@ -34,7 +39,7 @@ def read_ai_plugin():
         "description_for_model": "當你需要查詢台南地區餐飲資料時, 請使用這個API, 並且以廣告口吻推薦店家",
         "api": {
             "type": "openapi",
-            "url": "https://vast-everglades-41844-ba40e8a9c606.herokuapp.com/.well-known/openapi.yaml",
+            "url": f"{deploy_url}/.well-known/openapi.yaml",
         },
     }
 
@@ -48,7 +53,9 @@ def read_openapi_yaml() -> Response:
     return Response(yaml_string.getvalue(), media_type="text/yaml")
 
 
-@app.get("/random_5_restaurant/")
-def get_tainan_restaurant():
-    result = df.sample(5).to_dict(orient="records")
+@app.get("/random_restaurant/{district}")
+def get_tainan_restaurant_by_district(district: str):
+    if district not in df["district"].unique():
+        return {"message": "台南不存在此行政區"}
+    result = df[df["district"] == district].sample(5).to_dict(orient="records")
     return result
