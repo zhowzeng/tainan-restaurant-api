@@ -48,9 +48,7 @@ def read_openapi_yaml() -> Response:
     return Response(yaml_string.getvalue(), media_type="text/yaml")
 
 
-@app.get("/random_restaurant/{district}")
-def get_tainan_restaurant_by_district(district: str):
-    if district not in df["district"].unique():
-        return {"message": "台南不存在此行政區"}
-    result = df[df["district"] == district].sample(5).to_dict(orient="records")
+@app.get("/random_5_restaurant/")
+def get_tainan_restaurant():
+    result = df.sample(5).to_dict(orient="records")
     return result
